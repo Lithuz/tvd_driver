@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             NavigationPage.HasNavigationBar="False"
+             x:Class="tvd_driver.Views.LoginPage">
+    <ContentPage.Content>
+        <Grid>
+            <Image 
+                Source="LoginBackGround.png" 
+                Aspect="AspectFill"/>
+            <BoxView 
+                Color="#FFFFFF" 
+                Opacity="0.5"/>
+            <ScrollView >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition 
+                            Height="Auto"/>
+                        <RowDefinition 
+                            Height="*"/>
+                        <RowDefinition
+                            Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackLayout 
+                        Grid.Row="0" 
+                        x:Name="LogoLayout"
+                        VerticalOptions="CenterAndExpand">
+                        <Image 
+                            x:Name="LoginLogo" 
+                            Source="LoginLogo.png" 
+                            WidthRequest="200"/>
+                    </StackLayout>
+
+                    <StackLayout 
+                        Grid.Row="1" 
+                        x:Name="CredentialsLayout" 
+                        VerticalOptions="StartAndExpand" 
+                        Margin="40,0">
+                        <Entry 
+                            x:Name="ntyUsername" 
+                            Placeholder="Correo electrónico" 
+                            Keyboard="Email"/>
+                        <Entry 
+                            x:Name="ntyPassword" 
+                            Placeholder="Contraseña" 
+                            IsPassword="True"/>
+                        <StackLayout 
+                            Orientation="Horizontal">
+                            <Label 
+                                Text="Recuperar contraseña" 
+                                HorizontalOptions="StartAndExpand" 
+                                FontAttributes="Bold"/>
+                        </StackLayout>
+                        <StackLayout 
+                        Orientation="Horizontal"
+                            VerticalOptions="CenterAndExpand">
+                            <Label 
+                            HorizontalOptions="StartAndExpand"
+                            VerticalOptions="Center"
+                            Text="Recordar usuario"/>
+                            <Switch 
+                                HorizontalOptions="EndAndExpand">
+                            </Switch>
+                        </StackLayout>
+                        <ActivityIndicator
+                            x:Name="ActivitySpinner" 
+                            Color="#5D2F99" 
+                            IsVisible="False"/>
+                        <StackLayout 
+                            Orientation="Horizontal"
+                            VerticalOptions="CenterAndExpand" 
+                            Margin="0,0,0,30">
+                            <Button 
+                                x:Name="btnSignIn" 
+                                Text="INGRESAR"  
+                                BackgroundColor="#8559b5" 
+                                BorderRadius="6" 
+                                HeightRequest="40" 
+                                WidthRequest="100" 
+                                TextColor="White" 
+                                HorizontalOptions="CenterAndExpand"
+                                Clicked="BtnSignIn_Clicked"/>                            
+                        </StackLayout>
+                    </StackLayout>
+                </Grid>
+            </ScrollView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

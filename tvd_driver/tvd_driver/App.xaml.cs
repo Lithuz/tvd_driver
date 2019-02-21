@@ -1,17 +1,22 @@
 ﻿using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using tvd_driver.Views;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace tvd_driver
 {
     public partial class App : Application
     {
+
+        public static double ScreenHeight;
+        public static double ScreenWidth;
+
         public App()
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new NavigationPage(new LoginPage());
         }
 
         protected override void OnStart()
