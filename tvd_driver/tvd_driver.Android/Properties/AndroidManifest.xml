@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.companyname.tvd_driver">
-  <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="27" />
-  <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-  <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-  <application android:label="tvd_driver.Android">
-    <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyBjbGAmJac9ilsfODUFTqCQgsQmy47mlCM" />
-  </application>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.ald.tvd_driver" android:installLocation="auto">
+	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="27" />
+	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+	<application android:label="tvd_driver.Android">
+		<meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyBjbGAmJac9ilsfODUFTqCQgsQmy47mlCM" />
+	</application>
 </manifest>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "141302426286",
+    "firebase_url": "https://vitsdoc.firebaseio.com",
+    "project_id": "vitsdoc",
+    "storage_bucket": "vitsdoc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:141302426286:android:f5adfca813015f92",
+        "android_client_info": {
+          "package_name": "com.ald.tvd_driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "141302426286-679c32dfr810kiq832lu3slfirfkt54f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ald.tvd_driver",
+            "certificate_hash": "7a9f5a7dee439bc2c79ad3ee012ba982ada58ee0"
+          }
+        },
+        {
+          "client_id": "141302426286-jharnr1i1dlse86ju6hgi2huigqcg9mb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHLswiXa8ZM2KBiaVYfS1tsavqWkCqTCk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "141302426286-jharnr1i1dlse86ju6hgi2huigqcg9mb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

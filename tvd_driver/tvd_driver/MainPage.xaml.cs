@@ -30,5 +30,10 @@ namespace tvd_driver
                 MainMap.MoveToRegion(MapSpan.FromCenterAndRadius(position, Distance.FromKilometers(.5)));
             }
         }
+
+        private void BtnAlert_Clicked(object sender, EventArgs e)
+        {
+            Device.OpenUri(new Uri("tel:+5216671540679"));
+        }
     }
 }

@@ -35,7 +35,7 @@
                             VerticalOptions="CenterAndExpand"
                             Margin="0,0,0,30">
             <Button 
-                                x:Name="btnSignIn" 
+                                x:Name="btnEndDelivery" 
                                 Text="Finalizar Viaje"  
                                 BackgroundColor="#8559b5" 
                                 BorderRadius="6" 
@@ -43,13 +43,22 @@
                                 TextColor="White" 
                                 HorizontalOptions="CenterAndExpand"/>
             <Button 
-                                x:Name="btnRegister" 
+                                x:Name="btnCancel" 
                                 Text="Cancelar"  
                                 BackgroundColor="#8559b5" 
                                 BorderRadius="6" 
                                 HeightRequest="40" 
                                 TextColor="White" 
                                 HorizontalOptions="CenterAndExpand"/>
+            <Button 
+                                x:Name="btnAlert" 
+                                Text="Alerta"  
+                                BackgroundColor="#FF4F2B" 
+                                BorderRadius="6" 
+                                HeightRequest="40" 
+                                TextColor="White" 
+                                HorizontalOptions="CenterAndExpand"
+                                Clicked="BtnAlert_Clicked"/>
         </StackLayout>
     </Grid>
 </ContentPage>
