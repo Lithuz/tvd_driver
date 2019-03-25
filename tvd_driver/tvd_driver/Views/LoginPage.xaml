@@ -39,11 +39,11 @@
                         Margin="40,0">
                         <Entry 
                             x:Name="ntyUsername" 
-                            Placeholder="Correo electrónico" 
+                            Placeholder="User name" 
                             Keyboard="Email"/>
                         <Entry 
                             x:Name="ntyPassword" 
-                            Placeholder="Contraseña" 
+                            Placeholder="password" 
                             IsPassword="True"/>
                         <StackLayout 
                             Orientation="Horizontal">
@@ -52,7 +52,7 @@
                                 HorizontalOptions="StartAndExpand" 
                                 FontAttributes="Bold"/>
                         </StackLayout>
-                        <StackLayout 
+                        <!--<StackLayout 
                         Orientation="Horizontal"
                             VerticalOptions="CenterAndExpand">
                             <Label 
@@ -62,7 +62,7 @@
                             <Switch 
                                 HorizontalOptions="EndAndExpand">
                             </Switch>
-                        </StackLayout>
+                        </StackLayout>-->
                         <ActivityIndicator
                             x:Name="ActivitySpinner" 
                             Color="#5D2F99" 

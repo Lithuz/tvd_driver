@@ -4,7 +4,7 @@ using System.Text;
 
 namespace tvd_driver.ViewModels
 {
-    class LoginViewModel
-    {
+    public class LoginViewModel
+    {       
     }
 }

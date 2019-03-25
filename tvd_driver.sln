@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tvd_driver.Android", "tvd_d
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tvd_driver.iOS", "tvd_driver\tvd_driver.iOS\tvd_driver.iOS.csproj", "{EE39C997-33AE-48B8-A85F-017CFBC53726}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tvd_driver", "tvd_driver\tvd_driver\tvd_driver.csproj", "{C2C301AD-4CEB-47F7-AF91-8B49A59054FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tvd_driver", "tvd_driver\tvd_driver\tvd_driver.csproj", "{C2C301AD-4CEB-47F7-AF91-8B49A59054FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

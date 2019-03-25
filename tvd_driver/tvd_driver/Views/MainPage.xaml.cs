@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using tvd_driver.Models;
 using tvd_driver.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
@@ -13,6 +14,8 @@ namespace tvd_driver
     public partial class MainPage : ContentPage
     {
         GeolocatorService geolocatorService;
+
+        public LoginModel UserData { get; set; }
 
         public MainPage()
         {
