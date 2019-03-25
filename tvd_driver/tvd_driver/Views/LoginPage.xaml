@@ -25,18 +25,19 @@
                     <StackLayout 
                         Grid.Row="0" 
                         x:Name="LogoLayout"
-                        VerticalOptions="CenterAndExpand">
+                        VerticalOptions="StartAndExpand">
                         <Image 
                             x:Name="LoginLogo" 
-                            Source="LoginLogo.png" 
-                            WidthRequest="200"/>
+                            Source="TheVitaminDoctors.png" 
+                            WidthRequest="200"
+                            Margin="0,80,0,0"/>
                     </StackLayout>
 
                     <StackLayout 
                         Grid.Row="1" 
                         x:Name="CredentialsLayout" 
-                        VerticalOptions="StartAndExpand" 
-                        Margin="40,0">
+                        VerticalOptions="EndAndExpand" 
+                        Margin="40,0,40,100">
                         <Entry 
                             x:Name="ntyUsername" 
                             Placeholder="User name" 
@@ -49,7 +50,7 @@
                             Orientation="Horizontal">
                             <Label 
                                 Text="Recuperar contraseña" 
-                                HorizontalOptions="StartAndExpand" 
+                                HorizontalOptions="CenterAndExpand" 
                                 FontAttributes="Bold"/>
                         </StackLayout>
                         <!--<StackLayout 

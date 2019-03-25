@@ -17,6 +17,10 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using Android.Util;
+using WindowsAzure.Messaging;
+using System.Collections.Generic;
+using System.Linq;
+using Android.Content;
 
 namespace tvd_driver.Droid
 {
@@ -24,6 +28,7 @@ namespace tvd_driver.Droid
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         public static FirebaseApp app;
+        public const string TAG = "MainActivity";
 
         #region Singleton
         private static MainActivity instance;
@@ -47,6 +52,18 @@ namespace tvd_driver.Droid
 
             base.OnCreate(savedInstanceState);
 
+            if (Intent.Extras != null)
+            {
+                foreach (var key in Intent.Extras.KeySet())
+                {
+                    if (key != null)
+                    {
+                        var value = Intent.Extras.GetString(key);
+                        Log.Debug(TAG, "Key: {0} Value: {1}", key, value);
+                    }
+                }
+            }
+
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.AccessFineLocation }, 1);
             ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.AccessCoarseLocation }, 1);
@@ -57,14 +74,14 @@ namespace tvd_driver.Droid
 
             IsPlayServicesAvailable();
 #if DEBUG
-            // Force refresh of the token. If we redeploy the app, no new token will be sent but the old one will
+            //Force refresh of the token.If we redeploy the app, no new token will be sent but the old one will
             // be invalid.
-            //Task.Run(() =>
-            //{
-            //    // This may not be executed on the main thread.
-            //    FirebaseInstanceId.Instance.DeleteInstanceId();
-            //    Console.WriteLine("Forced token: " + FirebaseInstanceId.Instance.Token);
-            //});
+            Task.Run(() =>
+            {
+                // This may not be executed on the main thread.
+                FirebaseInstanceId.Instance.DeleteInstanceId();
+                Console.WriteLine("Forced token: " + FirebaseInstanceId.Instance.Token);
+            });
 #endif
         }
 
@@ -97,48 +114,26 @@ namespace tvd_driver.Droid
         [IntentFilter(new[] { "com.google.firebase.INSTANCE_ID_EVENT" })]
         public class MyFirebaseIIDService : FirebaseInstanceIdService
         {
-            public void OnTokenRefreshAsync()
+            const string TAG = "MyFirebaseIIDService";
+            NotificationHub hub;
+
+            public override void OnTokenRefresh()
             {
                 var refreshedToken = FirebaseInstanceId.Instance.Token;
-                Console.WriteLine($"Token received: {refreshedToken}");
-                SendRegistrationToServerAsync(refreshedToken);
+                Log.Debug(TAG, "FCM token: " + refreshedToken);
+                SendRegistrationToServer(refreshedToken);
             }
 
-            public void SendRegistrationToServerAsync(string token)
+            void SendRegistrationToServer(string token)
             {
+                // Register with Notification Hubs
+                hub = new NotificationHub(Constants.NotificationHubName,
+                                            Constants.ListenConnectionString, this);
 
-                //    try
-                //    {
-                //        //Formats: https://firebase.google.com/docs/cloud-messaging/concept-options
-                //        //    The "notification" format will automatically displayed in the notification center if the
-                //        //     app is not in the foreground.
-                //        const string templateBodyFCM =
-                //            "{" +
-                //                "\"notification\" : {" +
-                //                "\"body\" : \"$(messageParam)\"," +
-                //                  "\"title\" : \"Xamarin University\"," +
-                //                "\"icon\" : \"myicon\" }" +
-                //            "}";
+                var tags = new List<string>() { };
+                var regID = hub.Register(token, tags.ToArray()).RegistrationId;
 
-                //        var templates = new JObject();
-                //        templates["genericMessage"] = new JObject
-                //    {
-                //        {"body", templateBodyFCM}
-                //    };
-
-                //        var client = new WindowsAzure.Messaging.NotificationHub(;
-                //        var push = client.GetPush();
-
-                //        await push.RegisterAsync(token, templates);
-
-                //        // Push object contains installation ID afterwards.
-                //        Console.WriteLine(push.InstallationId.ToString());
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        Console.WriteLine(ex.Message);
-                //        Debugger.Break();
-                //    }
+                Log.Debug(TAG, $"Successful registration of ID {regID}");
             }
         }
 
@@ -146,47 +141,41 @@ namespace tvd_driver.Droid
         [IntentFilter(new[] { "com.google.firebase.MESSAGING_EVENT" })]
         public class MyFirebaseMessagingService : FirebaseMessagingService
         {
+            const string TAG = "MyFirebaseMsgService";
             public override void OnMessageReceived(RemoteMessage message)
             {
-                base.OnMessageReceived(message);
-
-                Console.WriteLine("Received: " + message);
-
-                // Android supports different message payloads. To use the code below it must be something like this (you can paste this into Azure test send window):
-                // {
-                //   "notification" : {
-                //      "body" : "The body",
-                //                 "title" : "The title",
-                //                 "icon" : "myicon
-                //   }
-                // }
-                try
+                Log.Debug(TAG, "From: " + message.From);
+                if (message.GetNotification() != null)
                 {
-                    var msg = message.GetNotification().Body;
-                    MessagingCenter.Send<object, string>(this, App.NotificationRecivedkey, msg);
-
-
-
+                    //These is how most messages will be received
+                    Log.Debug(TAG, "Notification Message Body: " + message.GetNotification().Body);
+                    SendNotification(message.GetNotification().Body);
                 }
-                catch (Exception ex)
+                else
                 {
-                    Console.WriteLine("Error extracting message: " + ex);
+                    //Only used for debugging payloads sent from the Azure portal
+                    SendNotification(message.Data.Values.First());
+                    var msg = message.Data.Values.First();
                 }
             }
+
+            void SendNotification(string messageBody)
+            {
+                var intent = new Intent(this, typeof(MainActivity));
+                intent.AddFlags(ActivityFlags.ClearTop);
+                var pendingIntent = PendingIntent.GetActivity(this, 0, intent, PendingIntentFlags.OneShot);
+
+                var notificationBuilder = new Notification.Builder(this)
+                            .SetContentTitle("FCM Message")
+                            .SetSmallIcon(Resource.Drawable.ic_launcher)
+                            .SetContentText(messageBody)
+                            .SetAutoCancel(true)
+                            .SetContentIntent(pendingIntent);
+
+                var notificationManager = NotificationManager.FromContext(this);
+
+                notificationManager.Notify(0, notificationBuilder.Build());
+            }
         }
-
-        //private void InitFirebaseAuth()
-        //{
-        //    var options = new FirebaseOptions.Builder()
-        //    .SetApplicationId("1:141302426286:android:f5adfca813015f92")
-        //    .SetApiKey("AIzaSyAyFthYa3extbXIMx14XKhK7OWK0WNV-ls")
-        //    .Build();
-
-
-
-        //    if (app == null)
-        //        app = FirebaseApp.InitializeApp(this, options, "TheVitaminDoctors");
-
-        //}
     }
 }

@@ -28,17 +28,10 @@ namespace tvd_driver.Views
             }
             else
             {
-                RegisterDevice();
                 Navigation.InsertPageBefore(new ProfileMainPage(response), this);
                 await Navigation.PopAsync();
             }
             ActivitySpinner.IsVisible = false;
-        }
-
-        public void RegisterDevice()
-        {
-            var register = DependencyService.Get<IRegisterDevice>();
-            register.RegisterDevice();
         }
     }
 }
