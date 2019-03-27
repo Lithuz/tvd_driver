@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using tvd_driver.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Plugin.LocalNotifications;
+using Plugin.PushNotification;
 
 namespace tvd_driver.Views
 {
@@ -45,10 +47,14 @@ namespace tvd_driver.Views
 
         private void OnMessageRecived(object sender, string msg)
         {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                var sd = msg;
-            });
+            CrossLocalNotifications.Current.Show("Te Vitamin Doctors Driver", msg, 0);
+
+            //CrossPushNotification.Current.RegisterForPushNotifications();
+
+            //Device.BeginInvokeOnMainThread(() =>
+            //{
+            //    var sd = msg;
+            //});
         }
 
         private void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)

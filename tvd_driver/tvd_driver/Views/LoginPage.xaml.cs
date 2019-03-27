@@ -15,11 +15,12 @@ namespace tvd_driver.Views
         public LoginPage()
         {
             InitializeComponent();
+            this.IsBusy = false;
         }
 
         private async void BtnSignIn_Clicked(object sender, EventArgs e)
         {
-            ActivitySpinner.IsVisible = true;
+            IsBusy = true;
             ApiServices apiServices = new ApiServices();
             var response = await apiServices.LoginUser(ntyUsername.Text, ntyPassword.Text);
             if (response == null)
@@ -31,7 +32,7 @@ namespace tvd_driver.Views
                 Navigation.InsertPageBefore(new ProfileMainPage(response), this);
                 await Navigation.PopAsync();
             }
-            ActivitySpinner.IsVisible = false;
+            IsBusy = false;
         }
     }
 }

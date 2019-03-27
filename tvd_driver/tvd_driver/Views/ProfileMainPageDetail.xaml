@@ -5,4 +5,67 @@
              xmlns:pages="clr-namespace:tvd_driver"
              xmlns:pages1="clr-namespace:tvd_driver.Views"
              Title="Detail">
+
+    <ScrollView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="*"/>
+                <ColumnDefinition 
+                    Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="*"/>
+                <RowDefinition
+                    Height="*"/>
+                <RowDefinition
+                    Height="150"/>
+                <RowDefinition
+                    Height="150"/>
+                <RowDefinition
+                    Height="*"/>
+                <RowDefinition
+                    Height="*"/>
+                <RowDefinition
+                    Height="*"/>
+                <RowDefinition
+                    Height="*"/>
+            </Grid.RowDefinitions>
+            <Button 
+                Grid.Column="0" 
+                Grid.Row="2" 
+                Text="" 
+                Image="route.png" 
+                HorizontalOptions="Start" 
+                HeightRequest="50" 
+                BorderColor="Transparent"
+                BackgroundColor="Transparent"/>
+            <Button 
+                Grid.Column="1" 
+                Grid.Row="2" 
+                Text="" 
+                Image="money.png" 
+                HorizontalOptions="Start" 
+                HeightRequest="50"
+                BorderColor="Transparent"
+                BackgroundColor="Transparent"/>
+            <Button 
+                Grid.Column="0"
+                Grid.Row="3" Text="" 
+                Image="test.png"
+                HorizontalOptions="Start"
+                HeightRequest="50"
+                BorderColor="Transparent"
+                BackgroundColor="Transparent"/>
+            <Button Grid.Column="1"
+                    Grid.Row="3"
+                    Text="" 
+                    Image="question.png" 
+                    HorizontalOptions="Start" 
+                    HeightRequest="50"
+                BorderColor="Transparent"
+                BackgroundColor="Transparent"/>
+        </Grid>
+    </ScrollView>
 </ContentPage>

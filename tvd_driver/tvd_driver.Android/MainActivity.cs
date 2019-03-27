@@ -21,10 +21,13 @@ using WindowsAzure.Messaging;
 using System.Collections.Generic;
 using System.Linq;
 using Android.Content;
+using Microsoft.WindowsAzure.MobileServices;
+using Plugin.LocalNotifications;
+using Plugin.PushNotification;
 
 namespace tvd_driver.Droid
 {
-    [Activity(Label = "tvd_driver", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "The Vitamin Doctors Drive", Icon = "@drawable/TheVitaminDoctorsLogo", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         public static FirebaseApp app;
@@ -71,6 +74,7 @@ namespace tvd_driver.Droid
 
             //FirebaseApp.InitializeApp(Application.Context);
             LoadApplication(new App());
+            PushNotificationManager.ProcessIntent(this, Intent);
 
             IsPlayServicesAvailable();
 #if DEBUG
@@ -109,73 +113,129 @@ namespace tvd_driver.Droid
             }
         }
 
-        // This service handles the device's registration with FCM.
-        [Service]
-        [IntentFilter(new[] { "com.google.firebase.INSTANCE_ID_EVENT" })]
-        public class MyFirebaseIIDService : FirebaseInstanceIdService
-        {
-            const string TAG = "MyFirebaseIIDService";
-            NotificationHub hub;
 
-            public override void OnTokenRefresh()
-            {
-                var refreshedToken = FirebaseInstanceId.Instance.Token;
-                Log.Debug(TAG, "FCM token: " + refreshedToken);
-                SendRegistrationToServer(refreshedToken);
-            }
 
-            void SendRegistrationToServer(string token)
-            {
-                // Register with Notification Hubs
-                hub = new NotificationHub(Constants.NotificationHubName,
-                                            Constants.ListenConnectionString, this);
+        //// This service handles the device's registration with FCM.
+        //[Service]
+        //[IntentFilter(new[] { "com.google.firebase.INSTANCE_ID_EVENT" })]
+        //public class MyFirebaseIIDService : FirebaseInstanceIdService
+        //{
+        //    const string TAG = "MyFirebaseIIDService";
+        //    NotificationHub hub;
 
-                var tags = new List<string>() { };
-                var regID = hub.Register(token, tags.ToArray()).RegistrationId;
+        //    public override void OnTokenRefresh()
+        //    {
+        //        var refreshedToken = FirebaseInstanceId.Instance.Token;
+        //        Log.Debug(TAG, "FCM token: " + refreshedToken);
+        //        SendRegistrationToServer(refreshedToken);
+        //    }
 
-                Log.Debug(TAG, $"Successful registration of ID {regID}");
-            }
-        }
+        //    void SendRegistrationToServer(string token)
+        //    {
+        //        // Register with Notification Hubs
+        //        hub = new NotificationHub(Constants.NotificationHubName,
+        //                                    Constants.ListenConnectionString, this);
 
-        [Service]
-        [IntentFilter(new[] { "com.google.firebase.MESSAGING_EVENT" })]
-        public class MyFirebaseMessagingService : FirebaseMessagingService
-        {
-            const string TAG = "MyFirebaseMsgService";
-            public override void OnMessageReceived(RemoteMessage message)
-            {
-                Log.Debug(TAG, "From: " + message.From);
-                if (message.GetNotification() != null)
-                {
-                    //These is how most messages will be received
-                    Log.Debug(TAG, "Notification Message Body: " + message.GetNotification().Body);
-                    SendNotification(message.GetNotification().Body);
-                }
-                else
-                {
-                    //Only used for debugging payloads sent from the Azure portal
-                    SendNotification(message.Data.Values.First());
-                    var msg = message.Data.Values.First();
-                }
-            }
+        //        var tags = new List<string>() { };
+        //        var regID = hub.Register(token, tags.ToArray()).RegistrationId;
 
-            void SendNotification(string messageBody)
-            {
-                var intent = new Intent(this, typeof(MainActivity));
-                intent.AddFlags(ActivityFlags.ClearTop);
-                var pendingIntent = PendingIntent.GetActivity(this, 0, intent, PendingIntentFlags.OneShot);
+        //        Log.Debug(TAG, $"Successful registration of ID {regID}");
+        //    }
+        //}
 
-                var notificationBuilder = new Notification.Builder(this)
-                            .SetContentTitle("FCM Message")
-                            .SetSmallIcon(Resource.Drawable.ic_launcher)
-                            .SetContentText(messageBody)
-                            .SetAutoCancel(true)
-                            .SetContentIntent(pendingIntent);
+        //[Service]
+        //[IntentFilter(new[] { "com.google.firebase.MESSAGING_EVENT" })]
+        //public class MyFirebaseMessagingService : FirebaseMessagingService
+        //{
+        //    const string TAG = "MyFirebaseMsgService";
+        //    public override void OnMessageReceived(RemoteMessage message)
+        //    {
+        //        Log.Debug(TAG, "From: " + message.From);
 
-                var notificationManager = NotificationManager.FromContext(this);
+        //        base.OnMessageReceived(message);
 
-                notificationManager.Notify(0, notificationBuilder.Build());
-            }
-        }
+        //        try
+        //        {
+        //            var msg = string.Empty;
+        //            if (message.GetNotification() != null)
+        //            {
+        //                //These is how most messages will be received
+        //                Log.Debug(TAG, "Notification Message Body: " + message.GetNotification().Body);
+        //                msg = message.GetNotification().Body;
+        //            }
+        //            else
+        //            {
+        //                //Only used for debugging payloads sent from the Azure portal
+        //                msg = message.Data.Values.First();
+        //            }
+        //            SendNotification(msg);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Log.Debug(TAG, "Error getting message: " + ex);
+        //        }
+
+        //    }
+
+        //    void SendNotification(string messageBody)
+        //    {
+        //        var notificationManager = GetSystemService(Context.NotificationService) as NotificationManager;
+        //        //Create an intent to show ui
+        //        var uiIntent = new Intent(this, typeof(MainActivity));
+
+        //        //Use Notification Builder
+        //        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+
+        //        //Create the notification
+        //        //we use the pending intent, passing our ui intent over which will get called
+        //        //when the notification is tapped.
+
+
+        //        var notification = builder.SetContentIntent(PendingIntent.GetActivity(this, 0, uiIntent, 0))
+        //                .SetSmallIcon(Resource.Drawable.TheVitaminDoctors)
+        //                .SetTicker("TITULO")
+        //                .SetContentTitle("Tittlwe")
+        //                .SetContentText("Mensaje")
+        //                //.AddAction(new NotificationCompat.Action())
+
+
+        //                //Set the notification sound
+        //                .SetSound(Android.Media.RingtoneManager.GetDefaultUri(Android.Media.RingtoneType.Notification))
+
+        //                //Auto cancel will remove the notification once the user touches it
+        //                .SetAutoCancel(true).Build();
+
+        //        //Show the notification
+        //        notificationManager.Notify(1, notification);
+
+        //        //MessagingCenter.Send<object, string>(this, App.NotificationRecivedkey, messageBody);
+        //        //var mainActivity = MainActivity.Getinstance();
+        //        //mainActivity.RunOnUiThread(() =>
+        //        //{
+        //        //    AlertDialog.Builder dlg = new AlertDialog.Builder(mainActivity);
+        //        //    AlertDialog alert = dlg.Create();
+        //        //    alert.SetTitle("The Vitamin Doctor");
+        //        //    alert.SetButton("Acept", delegate { alert.Dismiss(); });
+        //        //    alert.SetIcon(Resource.Drawable.notification_template_icon_low_bg);
+        //        //    alert.SetMessage(messageBody);
+        //        //    alert.Show();
+        //        //});
+
+        //        //var intent = new Intent(this, typeof(MainActivity));
+        //        //intent.AddFlags(ActivityFlags.ClearTop);
+        //        //var pendingIntent = PendingIntent.GetActivity(this, 0, intent, PendingIntentFlags.OneShot);
+
+        //        //var notificationBuilder = new Notification.Builder(this)
+        //        //            .SetContentTitle("FCM Message")
+        //        //            .SetSmallIcon(Resource.Drawable.ic_launcher)
+        //        //            .SetContentText(messageBody)
+        //        //            .SetAutoCancel(true)
+        //        //            .SetContentIntent(pendingIntent);
+
+        //        //var notificationManager = NotificationManager.FromContext(this);
+
+        //        //notificationManager.Notify(0, notificationBuilder.Build());
+            //}
+        //}
     }
 }

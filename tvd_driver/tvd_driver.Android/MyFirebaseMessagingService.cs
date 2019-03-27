@@ -7,6 +7,8 @@ using Android.App;
 using Android.Content;
 using Android.Util;
 using Firebase.Messaging;
+using Xamarin.Forms;
+using Plugin.PushNotification;
 
 namespace tvd_driver.Droid
 {
@@ -34,20 +36,22 @@ namespace tvd_driver.Droid
 
         void SendNotification(string messageBody)
         {
-            var intent = new Intent(this, typeof(MainActivity));
-            intent.AddFlags(ActivityFlags.ClearTop);
-            var pendingIntent = PendingIntent.GetActivity(this, 0, intent, PendingIntentFlags.OneShot);
+            MessagingCenter.Send<object, string>(this, App.NotificationRecivedkey, messageBody);
 
-            var notificationBuilder = new Notification.Builder(this)
-                        .SetContentTitle("FCM Message")
-                        .SetSmallIcon(Resource.Drawable.ic_launcher)
-                        .SetContentText(messageBody)
-                        .SetAutoCancel(true)
-                        .SetContentIntent(pendingIntent);
+            //var intent = new Intent(this, typeof(MainActivity));
+            //intent.AddFlags(ActivityFlags.ClearTop);
+            //var pendingIntent = PendingIntent.GetActivity(this, 0, intent, PendingIntentFlags.OneShot);
 
-            var notificationManager = NotificationManager.FromContext(this);
+            //var notificationBuilder = new Notification.Builder(this)
+            //            .SetContentTitle("FCM Message")
+            //            .SetSmallIcon(Resource.Drawable.ic_launcher)
+            //            .SetContentText(messageBody)
+            //            .SetAutoCancel(true)
+            //            .SetContentIntent(pendingIntent);
 
-            notificationManager.Notify(0, notificationBuilder.Build());
+            //var notificationManager = NotificationManager.FromContext(this);
+
+            //notificationManager.Notify(0, notificationBuilder.Build());
         }
     }
 }
