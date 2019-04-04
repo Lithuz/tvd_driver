@@ -13,6 +13,7 @@ using Android.Widget;
 using Gcm.Client;
 using tvd_driver.Models;
 using WindowsAzure.Messaging;
+using Android.Support.V4.App;
 
 [assembly: Permission(Name = "@PACKAGE_NAME@.permission.C2D_MESSAGE")]
 [assembly: UsesPermission(Name = "@PACKAGE_NAME@.permission.C2D_MESSAGE")]
@@ -24,7 +25,12 @@ using WindowsAzure.Messaging;
 
 namespace tvd_driver.Droid
 {
-    public class MyBroadCastReciver
+    [BroadcastReceiver(Permission = Gcm.Client.Constants.PERMISSION_GCM_INTENTS)]
+    [IntentFilter(new string[]{Gcm.Client.Constants.INTENT_FROM_GCM_MESSAGE},Categories =new string[] {"@PACKAGE_NAME@"})]
+    [IntentFilter(new string[] { Gcm.Client.Constants.INTENT_FROM_GCM_REGISTRATION_CALLBACK }, Categories = new string[] { "@PACKAGE_NAME@" })]
+    [IntentFilter(new string[] { Gcm.Client.Constants.INTENT_FROM_GCM_LIBRARY_RETRY }, Categories = new string[] { "@PACKAGE_NAME@" })]
+
+    public class MyBroadCastReciver:GcmBroadcastReceiverBase<PushHandlerService>
     {
         public static string[] SENDER_IDS = new string[] { Constants.SenderID };
 
@@ -35,18 +41,12 @@ namespace tvd_driver.Droid
     public class PushHandlerService : GcmServiceBase
     {
         public NotificationHub Hub { get; set; }
-
         public string RegistrationID { get; set; }
 
 
         public PushHandlerService() : base(Constants.SenderID)
         {
             Log.Info(MyBroadCastReciver.TAG, "PushHandlerService() constructor");
-        }
-
-        protected override void OnError(Context context, string errorId)
-        {
-            Log.Verbose(MyBroadCastReciver.TAG, "GCM Error: " + errorId);
         }
 
         protected override void OnMessage(Context context, Intent intent)
@@ -61,42 +61,20 @@ namespace tvd_driver.Droid
                     msg.AppendLine(key + "=" + intent.Extras.Get(key).ToString());
             }
 
-            var message = intent.Extras.GetString("Message");
+            var message = intent.Extras.GetString("message");
             var type = intent.Extras.GetString("Type");
 
             if (!string.IsNullOrEmpty(message))
             {
                 var notification = intent.Extras.GetString("Notification");
-                createNotification("The Vitamin Doctors", string.Format("{0}", message));
+                createNotification("The Vitamin Doctors", message);
             }
         }
-        private void createNotification(string tittle, string desc)
+
+        protected override bool OnRecoverableError(Context context, string errorId)
         {
-            var notificationmanager = GetSystemService(Context.NotificationService) as NotificationManager;
-            var uiIntent = new Intent(this, typeof(MainActivity));
-
-            var notification = new Notification(Android.Resource.Drawable.SymActionEmail, tittle);
-
-            notification.Flags = NotificationFlags.AutoCancel;
-
-            notification.SetLatestEventInfo(this, tittle, desc, PendingIntent.GetActivity(this, 0, uiIntent,0));
-
-            notificationmanager.Notify(1, notification);
-            dialogNotify(tittle, desc);
-        }
-
-        private void dialogNotify(string tittle, string desc)
-        {
-            var mainActivity = MainActivity.Getinstance();
-            mainActivity.RunOnUiThread(()=> {
-                AlertDialog.Builder dlg = new AlertDialog.Builder(mainActivity);
-                AlertDialog alert = dlg.Create();
-                alert.SetTitle(tittle);
-                alert.SetButton("Acept", delegate { alert.Dismiss(); });
-                alert.SetIcon(Resource.Drawable.notification_template_icon_low_bg);
-                alert.SetMessage(desc);
-                alert.Show();
-            });
+            Log.Warn(MyBroadCastReciver.TAG, "Recoverable Error" + errorId);
+            return base.OnRecoverableError(context, errorId);
         }
 
         protected override void OnRegistered(Context context, string registrationId)
@@ -104,7 +82,7 @@ namespace tvd_driver.Droid
             Log.Verbose(MyBroadCastReciver.TAG, "GCM Registered: " + registrationId);
             RegistrationID = registrationId;
 
-            Hub = new NotificationHub(Constants.ListenConnectionString, Constants.NotificationHubName, context);
+            Hub = new NotificationHub(Constants.NotificationHubName, Constants.ListenConnectionString, context);
 
             try
             {
@@ -131,13 +109,87 @@ namespace tvd_driver.Droid
             catch (Exception ex)
             {
                 Log.Error(MyBroadCastReciver.TAG, ex.Message);
-                throw;
             }
         }
 
         protected override void OnUnRegistered(Context context, string registrationId)
         {
             Log.Verbose(MyBroadCastReciver.TAG, "GCM unregistered: " + registrationId);
+            createNotification("The VItamin Doctors", "The Devices has been unregistered!");
+        }
+
+        private void createNotification(string tittle, string desc)
+        {
+//            var notificationmanager = GetSystemService(Context.NotificationService) as NotificationManager;
+//            var uiIntent = new Intent(this, typeof(MainActivity));
+
+//            var notification = new Notification(Android.Resource.Drawable.SymActionEmail, tittle);
+
+//            notification.Flags = NotificationFlags.AutoCancel;
+
+//#pragma warning disable CS0618 // Type or member is obsolete
+//            notification.SetLatestEventInfo(this, tittle, desc, PendingIntent.GetActivity(this, 0, uiIntent, 0));
+//#pragma warning restore CS0618 // Type or member is obsolete
+
+//            notificationmanager.Notify(1, notification);
+            dialogNotify(tittle, desc);
+        }
+
+       
+
+        private void dialogNotify(string tittle, string desc)
+        {
+            var resultIntent = new Intent(this, typeof(MainActivity));
+
+            // Construct a back stack for cross-task navigation:
+            var stackBuilder = Android.Support.V4.App.TaskStackBuilder.Create(this);
+            stackBuilder.AddNextIntent(resultIntent);
+
+            // Create the PendingIntent with the back stack:
+            var resultPendingIntent = stackBuilder.GetPendingIntent(0, (int)PendingIntentFlags.UpdateCurrent);
+
+            // Build the notification:
+            var builder = new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
+                          .SetAutoCancel(true) // Dismiss the notification from the notification area when the user clicks on it
+                          .SetContentIntent(resultPendingIntent) // Start up this activity when the user clicks the intent.
+                          .SetContentTitle(tittle) // Set the title
+                          .SetNumber(12) // Display the count in the Content Info    
+                          .SetSmallIcon(Resource.Drawable.TheVitaminDoctorsLogo) // This is the icon to display
+                          .SetContentText(desc); // the message to display.
+
+            // Finally, publish the notification:
+            var notificationManager = NotificationManagerCompat.From(this);
+            notificationManager.Notify(Constants.NOTIFICATION_ID, builder.Build());
+        }
+
+        [BroadcastReceiver]
+        public class CustomActionReceiver : BroadcastReceiver
+        {
+            public override void OnReceive(Context context, Intent intent)
+            {
+                //Show toast here
+                Toast.MakeText(context, intent.Action, ToastLength.Short).Show();
+                var extras = intent.Extras;
+
+                if (extras != null && !extras.IsEmpty)
+                {
+                    NotificationManager manager = context.GetSystemService(Context.NotificationService) as NotificationManager;
+                    var notificationId = extras.GetInt("NotificationIdKey", -1);
+                    if (notificationId != -1)
+                    {
+                        manager.Cancel(notificationId);
+                    }
+                }
+
+
+            }
+        }
+
+
+
+        protected override void OnError(Context context, string errorId)
+        {
+            Log.Verbose(MyBroadCastReciver.TAG, "GCM Error: " + errorId);
         }
     }
 }

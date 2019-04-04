@@ -2,9 +2,10 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              NavigationPage.HasNavigationBar="False"
-             x:Class="tvd_driver.Views.LoginPage">
+             x:Class="tvd_driver.Views.LoginPage"
+             BindingContext="{Binding Main,Source={StaticResource Locator}}">
     <ContentPage.Content>
-        <Grid>
+        <Grid BindingContext="{Binding Login}">
             <Image 
                 Source="LoginBackGround.png" 
                 Aspect="AspectFill"/>
@@ -41,11 +42,13 @@
                         <Entry 
                             x:Name="ntyUsername" 
                             Placeholder="User name" 
-                            Keyboard="Email"/>
+                            Keyboard="Email"
+                            Text="{Binding Email, Mode=TwoWay}"/>
                         <Entry 
                             x:Name="ntyPassword" 
                             Placeholder="password" 
-                            IsPassword="True"/>
+                            IsPassword="True"
+                            Text="{Binding PassWord, Mode=TwoWay}"/>
                         <!--<StackLayout 
                             Orientation="Horizontal">
                             <Label 
@@ -66,7 +69,7 @@
                         </StackLayout>-->
                         <ActivityIndicator
                             x:Name="ActivitySpinner" 
-                            IsRunning="{Binding IsBussy}"
+                            IsRunning="{Binding IsBussy, Mode=TwoWay}"
                             Color="#5D2F99" 
                             IsVisible="True"/>
                         <StackLayout 
@@ -82,7 +85,7 @@
                                 WidthRequest="100" 
                                 TextColor="White" 
                                 HorizontalOptions="CenterAndExpand"
-                                Clicked="BtnSignIn_Clicked"/>                            
+                                Command="{Binding LoginCommand}"/>                            
                         </StackLayout>
                     </StackLayout>
                 </Grid>

@@ -10,7 +10,10 @@ using tvd_driver.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Plugin.LocalNotifications;
-using Plugin.PushNotification;
+using Plugin.Settings;
+using tvd_driver.Helpers;
+using tvd_driver.Services;
+using tvd_driver.ViewModels;
 
 namespace tvd_driver.Views
 {
@@ -19,10 +22,12 @@ namespace tvd_driver.Views
     {
         public ObservableCollection<ProfileMainPageMenuItem> menulist { get; set; }
         public LoginModel UserData { get; set; }
-        public ProfileMainPage(LoginModel userData)
+        public ProfileMainPage()
         {
-            UserData = userData;
+
             InitializeComponent();
+            var mainModel = MainViewModel.Getinstance();
+            UserData = mainModel.Usuario;
             menulist = new ObservableCollection<ProfileMainPageMenuItem>(new[]
                 {
                     new ProfileMainPageMenuItem { Id = 0, Title = $"Status de Viaje" },
@@ -33,7 +38,7 @@ namespace tvd_driver.Views
                 }); ;
 
             Label prop = (Label)MasterPage.FindByName("userName");
-            prop.Text = userData.Nombre;
+            prop.Text = UserData.Nombre;
 
             MasterPage.ListView.ItemsSource = menulist;
             MasterPage.ListView.ItemSelected += ListView_ItemSelected;
@@ -65,7 +70,7 @@ namespace tvd_driver.Views
             var page = (Page)Activator.CreateInstance(item.TargetType);
             if (item.Id == 0)
             {
-                page = new MainPage();
+                page = new MainPage(null);
 
                 page.Title = item.Title;
 

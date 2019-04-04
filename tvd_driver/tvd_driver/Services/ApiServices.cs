@@ -14,11 +14,6 @@ namespace tvd_driver.Services
         string mainApiUri = "http://tvddriverapi.azurewebsites.net/api/";
         public async Task<LoginModel> LoginUser(string username, string password)
         {
-            var KeyValues = new List<KeyValuePair<string, string>>()
-            {
-                new KeyValuePair<string, string>("usuario",username),
-                new KeyValuePair<string, string>("password",password),
-            };
             var httpClient = new HttpClient();
             var response = await httpClient.GetStringAsync($"{mainApiUri}Enfermeros?usuario={username}&password={password}");
             
@@ -31,7 +26,24 @@ namespace tvd_driver.Services
             {
                 return null;
             }
+        }
 
+        public async Task<List<VentasModel>> GetAviableVentas()
+        {
+            var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync($"{mainApiUri}Ventas?Asignado=false");
+            var result = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            { 
+                var json = JsonConvert.DeserializeObject<List<VentasModel>>(result);
+                //var list = (List<VentasModel>)json;
+                return json;//json[0];
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

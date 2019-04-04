@@ -14,9 +14,9 @@
         </Grid.RowDefinitions>
         <Frame VerticalOptions="CenterAndExpand" CornerRadius="5" Padding="10" Margin="15,10,15,0" Grid.Row="0" BackgroundColor="#C7C3FF" HasShadow="True">
             <StackLayout>
-                <Label Text="Nombre de Cliente:"/>
-                <Label Text="Dirección:"/>
-                <Label Text="Teléfono:"/>
+                <Label x:Name="NombreCliente"/>
+                <Label x:Name="DireccionCliente"/>
+                <Label x:Name="TelefonoCliente"/>
             </StackLayout>
         </Frame>
         <Frame VerticalOptions="CenterAndExpand" CornerRadius="5" Padding="10" Margin="15,10,15,0" Grid.Row="1" BackgroundColor="#EEF1FF" HasShadow="True">

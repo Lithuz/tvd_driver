@@ -1,15 +1,18 @@
 ﻿using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using tvd_driver.Views;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Push;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
+using tvd_driver.Services;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace tvd_driver
 {
+    using Views;
+    using Helpers;
+    using Services;
+    using tvd_driver.Models;
+    using System.Threading.Tasks;
+    using tvd_driver.ViewModels;
+
     public partial class App : Application
     {
 
@@ -19,15 +22,27 @@ namespace tvd_driver
         public const string NotificationRecivedkey = "NotificationRecived";
         public const string MobileServiceUrl = "http://tvddriverapi.azurewebsites.net";
 
+        public LoginModel User = new LoginModel();
+
         public App()
         {
             InitializeComponent();
-            MainPage = new NavigationPage(new LoginPage());
-        }
+            User = null;
 
+            MainPage = new NavigationPage(new LoginPage());
+            //if (string.IsNullOrEmpty(Settings.UserId) || string.IsNullOrEmpty(Settings.UserPass))
+            //{
+            //    MainPage = new NavigationPage(new LoginPage());
+            //}
+            //else
+            //{
+            //    ReqData();                    
+            //}
+        }
+       
         protected override void OnStart()
         {
-            AppCenter.Start("android=d22f90dd-9587-4990-b120-d4ca3b5f04c2;" + "uwp={Your UWP App secret here};" + "ios={Your iOS App secret here}", typeof(Analytics), typeof(Crashes), typeof(Push));
+
         }
 
         protected override void OnSleep()

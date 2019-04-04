@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using tvd_driver.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using tvd_driver.Models;
+using tvd_driver.ViewModels;
+using tvd_driver.Helpers;
 
 namespace tvd_driver.Views
 {
@@ -15,24 +18,6 @@ namespace tvd_driver.Views
         public LoginPage()
         {
             InitializeComponent();
-            this.IsBusy = false;
-        }
-
-        private async void BtnSignIn_Clicked(object sender, EventArgs e)
-        {
-            IsBusy = true;
-            ApiServices apiServices = new ApiServices();
-            var response = await apiServices.LoginUser(ntyUsername.Text, ntyPassword.Text);
-            if (response == null)
-            {
-                await DisplayAlert("Alert", "Wrong User or Password", "Cancel");
-            }
-            else
-            {
-                Navigation.InsertPageBefore(new ProfileMainPage(response), this);
-                await Navigation.PopAsync();
-            }
-            IsBusy = false;
         }
     }
 }
