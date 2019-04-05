@@ -10,9 +10,9 @@ namespace tvd_driver.Models
         public int NumeroOrden { get; set; }
         public float TotalVenta { get; set; }
         public string NombreCliente { get; set; }
+        public string Direccion { get; set; }
         public string Correo { get; set; }
         public string TelefonoCLiente { get; set; }
-        public int Producto { get; set; }
         public string GeoLattitud { get; set; }
         public string GeoAltitud { get; set; }
         public bool Asignado { get; set; }

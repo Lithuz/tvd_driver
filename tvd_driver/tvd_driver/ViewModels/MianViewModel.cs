@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using tvd_driver.Models;
 using tvd_driver.Services;
@@ -15,6 +16,8 @@ namespace tvd_driver.ViewModels
         #region ViewModels    
         public LoginViewModel Login { get; set; }
         public VentasViewModel Ventas { get; set; }
+        public VentasItemViewModel Venta { get; set; }
+        public ObservableCollection<RelVentaPdctoModel> relVentasPdcto { get; set; }
         #endregion
 
         public LoginModel Usuario { get; set; }

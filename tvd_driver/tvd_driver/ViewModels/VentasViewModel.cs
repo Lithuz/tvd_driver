@@ -14,18 +14,24 @@ namespace tvd_driver.ViewModels
 
         private ApiServices apiServices;
         private ObservableCollection<VentasItemViewModel> ventas;
+        private IEnumerable<VentasItemViewModel> venta;
         private bool isRefreshing;
         private string filter;
         private List<VentasModel> ventasList;
 
         public ICommand RefreshVentas { get { return new RelayCommand(LoadVentas); } }
         public ICommand SearchCommand { get { return new RelayCommand(Search); } }
-        public ICommand SelectSaleCommand { get { return new RelayCommand(LoadAceptedSale); } }
 
         public ObservableCollection<VentasItemViewModel> Ventas
         {
             get { return this.ventas; }
             set { SetValue(ref this.ventas, value); }
+        }
+
+        public IEnumerable<VentasItemViewModel> Venta
+        {
+            get { return this.venta; }
+            set { SetValue(ref this.venta, value); }
         }
 
         public bool IsRefreshing
@@ -70,31 +76,23 @@ namespace tvd_driver.ViewModels
 
         private IEnumerable<VentasItemViewModel> ToVentasItemViewModel()
         {
-            return this.ventasList.Select(v => new VentasItemViewModel
+            var response = this.ventasList.Select(v => new VentasItemViewModel
             {
                 idVenta = v.idVenta,
                 NumeroOrden = v.NumeroOrden,
                 TotalVenta = v.TotalVenta,
                 NombreCliente = v.NombreCliente,
+                Direccion = v.Direccion,
                 Correo = v.Correo,
                 TelefonoCLiente = v.TelefonoCLiente,
-                Producto = v.Producto,
                 GeoLattitud = v.GeoLattitud,
                 GeoAltitud = v.GeoAltitud,
                 Asignado = v.Asignado,
                 Enfermero = v.Enfermero,
                 Fecha = v.Fecha
             });
-        }
-
-        private void LoadAceptedSale()
-        {
-            var mainModel = MainViewModel.Getinstance();
-            var user = mainModel.Usuario;
-            if(user.Estatus == 1)
-            {
-
-            }
+            venta = response;
+            return venta;
         }
     }
 }

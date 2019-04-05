@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +38,58 @@ namespace tvd_driver.Services
             if (response.IsSuccessStatusCode)
             { 
                 var json = JsonConvert.DeserializeObject<List<VentasModel>>(result);
+                //var list = (List<VentasModel>)json;
+                return json;//json[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        internal async Task<bool> SetStatusAsync(int idEnfermero, int status)
+        {
+            var httpClient = new HttpClient();
+            var response = await httpClient.PutAsync( new Uri($"{mainApiUri}Enfermeros?idEnfermero={idEnfermero}&status={status}"),null);
+            var result = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        internal async Task<bool> LinkVentaEnfermero(int idVenta, int idEnfermero, bool asignado)
+        {
+            var httpClient = new HttpClient();
+            var response = await httpClient.PutAsync(new Uri($"{mainApiUri}Ventas?idVentas={idVenta}&idEnfermero={idEnfermero}&Asignado={asignado}"), null);
+            var result = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+
+        internal async Task<ObservableCollection<RelVentaPdctoModel>> RelVentasProdcucto(int numeroOrden)
+        {
+            var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync($"{mainApiUri}Ventas?NumeroOrden={numeroOrden}");
+            var result = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = JsonConvert.DeserializeObject<ObservableCollection<RelVentaPdctoModel>>(result);
                 //var list = (List<VentasModel>)json;
                 return json;//json[0];
             }

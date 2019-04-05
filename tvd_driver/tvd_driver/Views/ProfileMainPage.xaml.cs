@@ -20,6 +20,7 @@ namespace tvd_driver.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ProfileMainPage : MasterDetailPage
     {
+
         public ObservableCollection<ProfileMainPageMenuItem> menulist { get; set; }
         public LoginModel UserData { get; set; }
         public ProfileMainPage()
@@ -31,7 +32,7 @@ namespace tvd_driver.Views
             menulist = new ObservableCollection<ProfileMainPageMenuItem>(new[]
                 {
                     new ProfileMainPageMenuItem { Id = 0, Title = $"Status de Viaje" },
-                    new ProfileMainPageMenuItem { Id = 1, Title = (UserData.Estatus == 1)?"Disponible":"En Viaje" },
+                    new ProfileMainPageMenuItem { Id = 1, Title = "Ventas Disponibles" },
                     new ProfileMainPageMenuItem { Id = 2, Title = $"Miembro desde {UserData.FechaAlta}" },
                     new ProfileMainPageMenuItem { Id = 3, Title = "Viajes Acomulados:" },
                     new ProfileMainPageMenuItem { Id = 4, Title = "Total acomulado:" }
@@ -41,28 +42,10 @@ namespace tvd_driver.Views
             prop.Text = UserData.Nombre;
 
             MasterPage.ListView.ItemsSource = menulist;
-            MasterPage.ListView.ItemSelected += ListView_ItemSelected;
+            MasterPage.ListView.ItemSelected += ListView_ItemSelectedAsync;
         }
 
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            MessagingCenter.Subscribe<object, string>(this, App.NotificationRecivedkey, OnMessageRecived);
-        }
-
-        private void OnMessageRecived(object sender, string msg)
-        {
-            CrossLocalNotifications.Current.Show("Te Vitamin Doctors Driver", msg, 0);
-
-            //CrossPushNotification.Current.RegisterForPushNotifications();
-
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
-            //    var sd = msg;
-            //});
-        }
-
-        private void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        private async void ListView_ItemSelectedAsync(object sender, SelectedItemChangedEventArgs e)
         {
             var item = e.SelectedItem as ProfileMainPageMenuItem;
             if (item == null)
@@ -70,14 +53,31 @@ namespace tvd_driver.Views
             var page = (Page)Activator.CreateInstance(item.TargetType);
             if (item.Id == 0)
             {
-                page = new MainPage(null);
+                var venta = MainViewModel.Getinstance().Venta;
+                if (venta != null)
+                {
+                    page = new MainPage(venta);
+
+                    page.Title = item.Title;
+
+                    Detail = new NavigationPage(page);
+                }
+                else
+                {
+                    await Xamarin.Forms.Application.Current.MainPage.DisplayAlert("Failed operation", "Theres no trip linked to current user.", "Dismiss");
+                }
+                IsPresented = false;
+            }
+            if (item.Id == 1)
+            {
+                page = new ProfileMainPageDetail();
 
                 page.Title = item.Title;
 
                 Detail = new NavigationPage(page);
+                IsPresented = false;
             }
             MasterPage.ListView.SelectedItem = null;
-            IsPresented = false;
         }
     }
 }

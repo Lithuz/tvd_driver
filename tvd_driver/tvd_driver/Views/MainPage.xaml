@@ -7,7 +7,7 @@
              Title="Control y Navegación">
     <Grid VerticalOptions="CenterAndExpand">
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="150"/>
             <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -16,10 +16,16 @@
             <StackLayout>
                 <Label x:Name="NombreCliente"/>
                 <Label x:Name="DireccionCliente"/>
+                <Label x:Name="EmailCliente"/>
                 <Label x:Name="TelefonoCliente"/>
+                <Picker 
+                    x:Name="PickerData"
+                    Title="Productos"
+                        SelectedIndex="0">
+                </Picker>
             </StackLayout>
         </Frame>
-        <Frame VerticalOptions="CenterAndExpand" CornerRadius="5" Padding="10" Margin="15,10,15,0" Grid.Row="1" BackgroundColor="#EEF1FF" HasShadow="True">
+        <Frame VerticalOptions="CenterAndExpand" CornerRadius="5" Padding="10" Margin="15,0,15,0" Grid.Row="1" BackgroundColor="#EEF1FF" HasShadow="True">
             <StackLayout>
                 <Label Text="Viajes acumulados:"/>
                 <Label Text="Total Acomulado:"/>
@@ -41,7 +47,8 @@
                                 BorderRadius="6" 
                                 HeightRequest="40" 
                                 TextColor="White" 
-                                HorizontalOptions="CenterAndExpand"/>
+                                HorizontalOptions="CenterAndExpand"
+                                Clicked="BtnEndDelivery_Clicked"/>
             <Button 
                                 x:Name="btnCancel" 
                                 Text="Cancelar"  
@@ -49,7 +56,8 @@
                                 BorderRadius="6" 
                                 HeightRequest="40" 
                                 TextColor="White" 
-                                HorizontalOptions="CenterAndExpand"/>
+                                HorizontalOptions="CenterAndExpand"
+                                Clicked="BtnCancel_Clicked"/>
             <Button 
                                 x:Name="btnAlert" 
                                 Text="Alerta"  

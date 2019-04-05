@@ -23,10 +23,10 @@
                     </Grid.RowDefinitions>
                     <Label
                         x:Name="userName"
-              Grid.Column="1"
-              Grid.Row="2"
+                        Grid.Column="1"
+                        Grid.Row="2"
                         Text="UserName"
-                       TextColor="White" 
+                        TextColor="White" 
                         FontSize="25"/>
                 </Grid>
             </ListView.Header>
@@ -38,8 +38,7 @@
                     VerticalTextAlignment="Center" 
                     Text="{Binding Title}" 
                      TextColor="Black"
-                    FontSize="15"
-                                  />
+                    FontSize="15"/>                           
                         </StackLayout>
                     </ViewCell>
                 </DataTemplate>

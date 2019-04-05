@@ -12,8 +12,7 @@
             <SearchBar
                 Text="{Binding Filter,Mode=TwoWay}"
                 SearchCommand="{Binding SearchCommand}"
-                Placeholder="Seach...">
-                
+                Placeholder="Seach...">                
             </SearchBar>
             <ListView
                 HasUnevenRows="True"
@@ -49,10 +48,6 @@
                                         FontAttributes="Bold"
                                         FontSize="Medium"
                                         Text="{Binding NombreCliente}"
-                                        TextColor="Black">
-                                        </Label>
-                                        <Label
-                                        Text="{Binding Asignado}"
                                         TextColor="Black">
                                         </Label>
                                         <Label

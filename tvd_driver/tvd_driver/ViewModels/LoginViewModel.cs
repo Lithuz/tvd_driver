@@ -59,6 +59,7 @@ namespace tvd_driver.ViewModels
                 register.RegisterDevice();
                 mainModel.Usuario = response;
                 mainModel.Ventas = new VentasViewModel();
+                await Application.Current.MainPage.Navigation.PopAsync();
                 await Application.Current.MainPage.Navigation.PushAsync(new Views.ProfileMainPage());
             }
         }
