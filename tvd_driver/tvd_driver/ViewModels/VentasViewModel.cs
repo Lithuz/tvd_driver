@@ -56,8 +56,8 @@ namespace tvd_driver.ViewModels
         {
             IsRefreshing = true;
             this.ventasList = await apiServices.GetAviableVentas();
-            this.Ventas = new ObservableCollection<VentasItemViewModel>(this.ToVentasItemViewModel());
             IsRefreshing = false;
+            this.Ventas = new ObservableCollection<VentasItemViewModel>(this.ToVentasItemViewModel());
         }
 
         private  void Search()

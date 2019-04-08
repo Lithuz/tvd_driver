@@ -26,7 +26,7 @@ using Plugin.LocalNotifications;
 
 namespace tvd_driver.Droid
 {
-    [Activity(Label = "The Vitamin Doctors Drive", Icon = "@drawable/TheVitaminDoctorsLogo", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "The Vitamin Doctors Drive", Icon = "@drawable/TheVitaminDoctorsLogo", Theme = "@style/MainTheme", MainLauncher = false, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         public const string TAG = "MainActivity";
@@ -58,20 +58,14 @@ namespace tvd_driver.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.AccessFineLocation }, 1);
             ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.AccessCoarseLocation }, 1);
+            ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.AccessNotificationPolicy }, 1);
+            ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.AccessNetworkState }, 1);
+            ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.BindNotificationListenerService }, 1);
             Xamarin.FormsMaps.Init(this, savedInstanceState);
 
             //FirebaseApp.InitializeApp(Application.Context);
             LoadApplication(new App());
             IsPlayServicesAvailable();
-//#if DEBUG
-//            //Force refresh of the token.If we redeploy the app, no new token will be sent but the old one will be invalid.
-//            Task.Run(() =>
-//            {
-//                // This may not be executed on the main thread.
-//                FirebaseInstanceId.Instance.DeleteInstanceId();
-//                //Console.WriteLine("Forced token: " + FirebaseInstanceId.Instance.Token);
-//            });
-//#endif
         }
 
         void CreateNotificationChannel()
@@ -117,6 +111,26 @@ namespace tvd_driver.Droid
                 Console.WriteLine("Play Services available.");
                 return true;
             }
-        }     
+        }
+
+        bool doubleBackToExitPressedOnce = false;
+        public override void OnBackPressed()
+        {
+            if (doubleBackToExitPressedOnce)
+            {
+                base.OnBackPressed();
+                Java.Lang.JavaSystem.Exit(0);
+                return;
+            }
+
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.MakeText(this, "Tap 'Back' twice to exit", ToastLength.Short).Show();
+
+            new Handler().PostDelayed(() =>
+            {
+                doubleBackToExitPressedOnce = false;
+            }, 2000);
+        }
     }
 }

@@ -21,25 +21,37 @@ namespace tvd_driver.Views
     public partial class ProfileMainPage : MasterDetailPage
     {
 
+        private static ProfileMainPage instance;
+
+        public static ProfileMainPage Getinstance()
+        {
+            if (instance == null)
+            {
+                instance = new ProfileMainPage();
+            }
+            return instance;
+        }
+
         public ObservableCollection<ProfileMainPageMenuItem> menulist { get; set; }
         public LoginModel UserData { get; set; }
         public ProfileMainPage()
         {
-
+            instance = this;
             InitializeComponent();
             var mainModel = MainViewModel.Getinstance();
             UserData = mainModel.Usuario;
             menulist = new ObservableCollection<ProfileMainPageMenuItem>(new[]
                 {
-                    new ProfileMainPageMenuItem { Id = 0, Title = $"Status de Viaje" },
-                    new ProfileMainPageMenuItem { Id = 1, Title = "Ventas Disponibles" },
-                    new ProfileMainPageMenuItem { Id = 2, Title = $"Miembro desde {UserData.FechaAlta}" },
-                    new ProfileMainPageMenuItem { Id = 3, Title = "Viajes Acomulados:" },
-                    new ProfileMainPageMenuItem { Id = 4, Title = "Total acomulado:" }
-                }); ;
-
+                    new ProfileMainPageMenuItem { Id = 0, Title = "Current Trip",Color="Black" },
+                    new ProfileMainPageMenuItem { Id = 1, Title = "Sales Available",Color="Black" },
+                    new ProfileMainPageMenuItem { Id = 2, Title = "Completed Services",Color="Black" },
+                    new ProfileMainPageMenuItem { Id = 3, Title = "Total acomulated(Bonuses):",Color="Black"},
+                    new ProfileMainPageMenuItem { Id = 4, Title = "Log Out",Color="Gray" }
+                });
             Label prop = (Label)MasterPage.FindByName("userName");
             prop.Text = UserData.Nombre;
+            Label propD = (Label)MasterPage.FindByName("memberDate");
+            propD.Text = "member since: "+UserData.FechaAlta;
 
             MasterPage.ListView.ItemsSource = menulist;
             MasterPage.ListView.ItemSelected += ListView_ItemSelectedAsync;
@@ -76,6 +88,19 @@ namespace tvd_driver.Views
 
                 Detail = new NavigationPage(page);
                 IsPresented = false;
+            }
+            if (item.Id == 4)
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    var result = await this.DisplayAlert("Alert!", "Do you really want to log out?", "Yes", "No");
+                    if (result)
+                    {
+                        Settings.UserId = string.Empty;
+                        Settings.UserPass = string.Empty;
+                        Xamarin.Forms.Application.Current.MainPage = new LoginPage();
+                    }
+                });
             }
             MasterPage.ListView.SelectedItem = null;
         }

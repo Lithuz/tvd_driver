@@ -14,6 +14,7 @@ using Gcm.Client;
 using tvd_driver.Models;
 using WindowsAzure.Messaging;
 using Android.Support.V4.App;
+using Android.Graphics;
 
 [assembly: Permission(Name = "@PACKAGE_NAME@.permission.C2D_MESSAGE")]
 [assembly: UsesPermission(Name = "@PACKAGE_NAME@.permission.C2D_MESSAGE")]
@@ -120,18 +121,6 @@ namespace tvd_driver.Droid
 
         private void createNotification(string tittle, string desc)
         {
-//            var notificationmanager = GetSystemService(Context.NotificationService) as NotificationManager;
-//            var uiIntent = new Intent(this, typeof(MainActivity));
-
-//            var notification = new Notification(Android.Resource.Drawable.SymActionEmail, tittle);
-
-//            notification.Flags = NotificationFlags.AutoCancel;
-
-//#pragma warning disable CS0618 // Type or member is obsolete
-//            notification.SetLatestEventInfo(this, tittle, desc, PendingIntent.GetActivity(this, 0, uiIntent, 0));
-//#pragma warning restore CS0618 // Type or member is obsolete
-
-//            notificationmanager.Notify(1, notification);
             dialogNotify(tittle, desc);
         }
 
@@ -150,6 +139,9 @@ namespace tvd_driver.Droid
 
             // Build the notification:
             var builder = new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
+                          .SetSound(Android.Media.RingtoneManager.GetDefaultUri(Android.Media.RingtoneType.Notification))
+                          .SetVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+                          .SetLights(Color.Purple, 3000, 3000)
                           .SetAutoCancel(true) // Dismiss the notification from the notification area when the user clicks on it
                           .SetContentIntent(resultPendingIntent) // Start up this activity when the user clicks the intent.
                           .SetContentTitle(tittle) // Set the title
@@ -157,9 +149,15 @@ namespace tvd_driver.Droid
                           .SetSmallIcon(Resource.Drawable.TheVitaminDoctorsLogo) // This is the icon to display
                           .SetContentText(desc); // the message to display.
 
+
+
+            PendingIntent contIntent = PendingIntent.GetActivity(this, 1000, resultIntent, PendingIntentFlags.OneShot);
+            builder.SetContentIntent(contIntent);
             // Finally, publish the notification:
-            var notificationManager = NotificationManagerCompat.From(this);
-            notificationManager.Notify(Constants.NOTIFICATION_ID, builder.Build());
+            NotificationManager notificationP = (NotificationManager)GetSystemService(Context.NotificationService);
+            notificationP.Notify(Constants.NOTIFICATION_ID, builder.Build());
+            //var notificationManager = NotificationManagerCompat.From(this);
+            //notificationManager.Notify(Constants.NOTIFICATION_ID, builder.Build());
         }
 
         [BroadcastReceiver]
@@ -180,8 +178,6 @@ namespace tvd_driver.Droid
                         manager.Cancel(notificationId);
                     }
                 }
-
-
             }
         }
 

@@ -1,9 +1,11 @@
-﻿using Plugin.Geolocator;
+﻿using GalaSoft.MvvmLight.Command;
+using Plugin.Geolocator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using tvd_driver.Models;
 using tvd_driver.Services;
 using tvd_driver.ViewModels;
@@ -23,6 +25,7 @@ namespace tvd_driver
         private ApiServices apiServices;
         public LoginModel UserData { get; set; }
         private MainViewModel mainViewModel;
+        private string ProductList = string.Empty;
 
         public MainPage(VentasModel ventasItemViewModel)
         {
@@ -32,13 +35,13 @@ namespace tvd_driver
 
             for (int c = 0; c < mainViewModel.relVentasPdcto.Count; c++)
             {
-                PickerData.Items.Add(mainViewModel.relVentasPdcto[c].ProductoNombre + "x " + mainViewModel.relVentasPdcto[c].ProductoCantidad);
+                ProductList = ProductList + mainViewModel.relVentasPdcto[c].ProductoNombre.ToUpper() + " - " + mainViewModel.relVentasPdcto[c].ProductoCantidad + "\n";
             }
             geolocatorService = new GeolocatorService();
-            NombreCliente.Text = mainViewModel.Venta.NombreCliente;
-            DireccionCliente.Text = mainViewModel.Venta.Direccion;
-            EmailCliente.Text = mainViewModel.Venta.Correo;
-            TelefonoCliente.Text = mainViewModel.Venta.TelefonoCLiente;
+            NombreCliente.Text = "Client: " + mainViewModel.Venta.NombreCliente.ToUpper();
+            DireccionCliente.Text = "Address: " + mainViewModel.Venta.Direccion;
+            EmailCliente.Text = "eMail: " + mainViewModel.Venta.Correo;
+            TelefonoCliente.Text = "Contact phone: " + mainViewModel.Venta.TelefonoCLiente;
 
             MoveMapToCurrentPosition();
         }
@@ -76,7 +79,7 @@ namespace tvd_driver
                         var unlinkResult = await apiServices.LinkVentaEnfermero(mainViewModel.Venta.idVenta, 0, false);
                         if (unlinkResult)
                         {
-                            await Application.Current.MainPage.Navigation.PopAsync();
+                            ProfileMainPage.Getinstance().Detail = new NavigationPage(new ProfileMainPageDetail());
                         }
                     }
                 }
@@ -93,10 +96,22 @@ namespace tvd_driver
                     var statusResult = await apiServices.SetStatusAsync(MainViewModel.Getinstance().Usuario.idEnfermero, 1);
                     if (statusResult)
                     {
-                        await Application.Current.MainPage.Navigation.PopAsync();
+                        mainViewModel.Venta = null;
+                        ProfileMainPage.Getinstance().Detail = new NavigationPage(new ProfileMainPageDetail());
                     }
                 }
             });
+        }
+
+        private async void Button_Clicked(object sender, EventArgs e)
+        {
+
+            await Application.Current.MainPage.DisplayAlert("Product List", ProductList, "Dismiss");
+        }
+        private async void Disclaimer_Clicked(object sender, EventArgs e)
+        {
+
+            await Application.Current.MainPage.Navigation.PushModalAsync(new DisclaimerPage());
         }
     }
 }

@@ -22,7 +22,6 @@
                         <RowDefinition
                             Height="Auto"/>
                     </Grid.RowDefinitions>
-
                     <StackLayout 
                         Grid.Row="0" 
                         x:Name="LogoLayout"
@@ -38,15 +37,13 @@
                         Grid.Row="1" 
                         x:Name="CredentialsLayout" 
                         VerticalOptions="EndAndExpand" 
-                        Margin="40,0,40,100">
+                        Margin="40,0,40,0">
                         <Entry 
-                            x:Name="ntyUsername" 
                             Placeholder="User name" 
                             Keyboard="Email"
                             Text="{Binding Email, Mode=TwoWay}"/>
                         <Entry 
-                            x:Name="ntyPassword" 
-                            Placeholder="password" 
+                            Placeholder="Password" 
                             IsPassword="True"
                             Text="{Binding PassWord, Mode=TwoWay}"/>
                         <!--<StackLayout 
@@ -56,29 +53,27 @@
                                 HorizontalOptions="CenterAndExpand" 
                                 FontAttributes="Bold"/>
                         </StackLayout>-->
-                        <!--<StackLayout 
+                        <StackLayout 
                         Orientation="Horizontal"
                             VerticalOptions="CenterAndExpand">
                             <Label 
                             HorizontalOptions="StartAndExpand"
                             VerticalOptions="Center"
-                            Text="Recordar usuario"/>
+                            Text="Remember me"/>
                             <Switch 
+                                IsToggled="{Binding IsRemembered, Mode=TwoWay}"
                                 HorizontalOptions="EndAndExpand">
                             </Switch>
-                        </StackLayout>-->
+                        </StackLayout>
                         <ActivityIndicator
-                            x:Name="ActivitySpinner" 
-                            IsRunning="{Binding IsBussy, Mode=TwoWay}"
-                            Color="#5D2F99" 
+                            IsRunning="{Binding IsRefreshing, Mode=TwoWay}"
                             IsVisible="True"/>
                         <StackLayout 
                             Orientation="Horizontal"
                             VerticalOptions="CenterAndExpand" 
                             Margin="0,0,0,30">
                             <Button 
-                                x:Name="btnSignIn" 
-                                Text="INGRESAR"  
+                                Text="LogIn"  
                                 BackgroundColor="#8559b5" 
                                 BorderRadius="6" 
                                 HeightRequest="40" 

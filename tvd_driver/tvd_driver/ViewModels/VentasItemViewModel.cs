@@ -41,7 +41,7 @@ namespace tvd_driver.ViewModels
                         
                         mainModel.relVentasPdcto = await apiServices.RelVentasProdcucto(mainModel.Venta.NumeroOrden);
 
-                        await Application.Current.MainPage.Navigation.PushAsync(new MainPage(mainModel.Venta));
+                        ProfileMainPage.Getinstance().Detail = new NavigationPage(new MainPage(mainModel.Venta));
                     }
                 }
             }

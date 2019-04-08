@@ -22,6 +22,7 @@ namespace tvd_driver.ViewModels
 
         public LoginModel Usuario { get; set; }
 
+
         #region Consturctores
         public MainViewModel()
         {

@@ -47,10 +47,42 @@ namespace tvd_driver.Services
             }
         }
 
+        internal object LoginUserSync(object userName, object userPass)
+        {
+            var httpClient = new HttpClient();
+            var response = httpClient.GetStringAsync($"{mainApiUri}Enfermeros?usuario={userName}&password={userPass}");
+
+            if (response.Result.Length > 2)
+            {
+                var json = JsonConvert.DeserializeObject<List<LoginModel>>(response.Result);
+                return json[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         internal async Task<bool> SetStatusAsync(int idEnfermero, int status)
         {
             var httpClient = new HttpClient();
             var response = await httpClient.PutAsync( new Uri($"{mainApiUri}Enfermeros?idEnfermero={idEnfermero}&status={status}"),null);
+            var result = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        internal async Task<bool> SaveDisclaimer(int idVenta, string Disclaimer)
+        {
+            var httpClient = new HttpClient();
+            var response = await httpClient.PutAsync(new Uri($"{mainApiUri}Ventas?idVentas={idVenta}&Disclaimer={Disclaimer}"), null);
             var result = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
