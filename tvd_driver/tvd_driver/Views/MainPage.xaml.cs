@@ -27,7 +27,7 @@ namespace tvd_driver
         private MainViewModel mainViewModel;
         private string ProductList = string.Empty;
 
-        public MainPage(VentasModel ventasItemViewModel)
+        public MainPage(VentasItemViewModel ventasItemViewModel)
         {
             InitializeComponent();
             apiServices = new ApiServices();

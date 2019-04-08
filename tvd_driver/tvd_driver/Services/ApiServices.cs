@@ -47,6 +47,40 @@ namespace tvd_driver.Services
             }
         }
 
+        internal VentasItemViewModel GetVentaNosync(int idEnfermero)
+        {
+            var httpClient = new HttpClient();
+            var response = httpClient.GetStringAsync($"{mainApiUri}Ventas?Enfermero={idEnfermero}");
+
+            if (response.Result.Length > 2)
+            {
+                var json = JsonConvert.DeserializeObject<List<VentasItemViewModel>>(response.Result);
+                //var list = (List<VentasModel>)json;
+                return json[0];//json[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        internal ObservableCollection<RelVentaPdctoModel> RelVentasProdcuctoNoSync(int numeroOrden)
+        {
+            var httpClient = new HttpClient();
+            var response = httpClient.GetStringAsync($"{mainApiUri}Ventas?NumeroOrden={numeroOrden}");
+
+            if (response.Result.Length > 2)
+            {
+                var json = JsonConvert.DeserializeObject<ObservableCollection<RelVentaPdctoModel>>(response.Result);
+                //var list = (List<VentasModel>)json;
+                return json;//json[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         internal object LoginUserSync(object userName, object userPass)
         {
             var httpClient = new HttpClient();
@@ -110,7 +144,6 @@ namespace tvd_driver.Services
                 return false;
             }
         }
-
 
 
         internal async Task<ObservableCollection<RelVentaPdctoModel>> RelVentasProdcucto(int numeroOrden)
