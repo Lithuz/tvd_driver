@@ -79,6 +79,8 @@ namespace tvd_driver
                         var unlinkResult = await apiServices.LinkVentaEnfermero(mainViewModel.Venta.idVenta, 0, false);
                         if (unlinkResult)
                         {
+                            mainViewModel.Venta = null;
+                            mainViewModel.Ventas = new VentasViewModel();
                             ProfileMainPage.Getinstance().Detail = new NavigationPage(new ProfileMainPageDetail());
                         }
                     }
@@ -97,6 +99,7 @@ namespace tvd_driver
                     if (statusResult)
                     {
                         mainViewModel.Venta = null;
+                        mainViewModel.Ventas = new VentasViewModel();
                         ProfileMainPage.Getinstance().Detail = new NavigationPage(new ProfileMainPageDetail());
                     }
                 }

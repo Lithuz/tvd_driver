@@ -33,12 +33,13 @@ namespace tvd_driver.Views
         }
 
         public ObservableCollection<ProfileMainPageMenuItem> menulist { get; set; }
+        public MainViewModel mainModel;
         public LoginModel UserData { get; set; }
         public ProfileMainPage()
         {
             instance = this;
             InitializeComponent();
-            var mainModel = MainViewModel.Getinstance();
+            mainModel = MainViewModel.Getinstance();
             UserData = mainModel.Usuario;
             menulist = new ObservableCollection<ProfileMainPageMenuItem>(new[]
                 {
@@ -82,11 +83,14 @@ namespace tvd_driver.Views
             }
             if (item.Id == 1)
             {
-                page = new ProfileMainPageDetail();
+                mainModel.Ventas = new VentasViewModel();
+                ProfileMainPage.Getinstance().Detail = new NavigationPage(new ProfileMainPageDetail());
+                //page = new ProfileMainPageDetail();
 
-                page.Title = item.Title;
+                //page.Title = item.Title;
+                //Detail = new NavigationPage(page);
+                //mainModel.Ventas = new VentasViewModel();
 
-                Detail = new NavigationPage(page);
                 IsPresented = false;
             }
             if (item.Id == 4)

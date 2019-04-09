@@ -45,6 +45,10 @@
                                         TextColor="Black">
                                         </Label>
                                         <Label
+                                        Text="{Binding Fecha}"
+                                        TextColor="Black">
+                                        </Label>
+                                        <Label
                                         FontAttributes="Bold"
                                         FontSize="Medium"
                                         Text="{Binding NombreCliente}"
@@ -55,7 +59,7 @@
                                         TextColor="Black">
                                         </Label>
                                         <Label
-                                        Text="{Binding Fecha}"
+                                        Text="{Binding Direccion}"
                                         TextColor="Black">
                                         </Label>
                                     </StackLayout>
