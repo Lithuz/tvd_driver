@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using tvd_driver.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Plugin.LocalNotifications;
-using Plugin.Settings;
+using Plugin.Connectivity;
 using tvd_driver.Helpers;
 using tvd_driver.Services;
 using tvd_driver.ViewModels;
+using Plugin.Connectivity.Abstractions;
 
 namespace tvd_driver.Views
 {
@@ -39,21 +39,51 @@ namespace tvd_driver.Views
             InitializeComponent();
             mainModel = MainViewModel.Getinstance();
             UserData = mainModel.Usuario;
+
             menulist = new ObservableCollection<ProfileMainPageMenuItem>(new[]
                 {
-                    new ProfileMainPageMenuItem { Id = 0, Title = "Current Trip",Color="Black" },
-                    new ProfileMainPageMenuItem { Id = 1, Title = "Sales Available",Color="Black" },
-                    new ProfileMainPageMenuItem { Id = 2, Title = "Completed Services",Color="Black" },
-                    new ProfileMainPageMenuItem { Id = 3, Title = "Total acomulated(Bonuses):",Color="Black"},
-                    new ProfileMainPageMenuItem { Id = 4, Title = "Log Out",Color="Gray" }
+                    new ProfileMainPageMenuItem { Id = 0, Title = "Current Trip",Color="Black",VOptions="Start",TextAlign="Left" },
+                    new ProfileMainPageMenuItem { Id = 1, Title = "Sales Available",Color="Black",VOptions="Start",TextAlign="Left" },
+                    new ProfileMainPageMenuItem { Id = 2, Title = $"Completed Services: {UserData.ViajesTotales}",Color="Black",VOptions="Start",TextAlign="Left" }
                 });
             Label prop = (Label)MasterPage.FindByName("userName");
             prop.Text = UserData.Nombre;
             Label propD = (Label)MasterPage.FindByName("memberDate");
-            propD.Text = "member since: "+UserData.FechaAlta;
+            propD.Text = "member since: " + UserData.FechaAlta;
 
             MasterPage.ListView.ItemsSource = menulist;
             MasterPage.ListView.ItemSelected += ListView_ItemSelectedAsync;
+
+            CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
+
+            verifyTirpInstance();
+        }
+
+        private async void Current_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
+        {
+            if (!e.IsConnected)
+            {
+                await DisplayAlert("ERROR", "Theres no connection aviable.", "got it");
+            }
+        }
+
+        protected async override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            if (!CrossConnectivity.Current.IsConnected)
+            {
+                await DisplayAlert("ERROR", "Theres no connection aviable.", "got it");
+            }
+        }
+
+        private void verifyTirpInstance()
+        {
+            if (mainModel.Venta != null && mainModel.Usuario.Estatus == 2)
+            {
+                string[] values = { "val1", "val2" };
+                DisplayActionSheet("PRUEBA", "CANCEL", "CANCEL2", values);
+            }
         }
 
         private async void ListView_ItemSelectedAsync(object sender, SelectedItemChangedEventArgs e)
@@ -83,26 +113,8 @@ namespace tvd_driver.Views
             {
                 mainModel.Ventas = new VentasViewModel();
                 ProfileMainPage.Getinstance().Detail = new NavigationPage(new ProfileMainPageDetail());
-                //page = new ProfileMainPageDetail();
-
-                //page.Title = item.Title;
-                //Detail = new NavigationPage(page);
-                //mainModel.Ventas = new VentasViewModel();
 
                 IsPresented = false;
-            }
-            if (item.Id == 4)
-            {
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    var result = await this.DisplayAlert("Alert!", "Do you really want to log out?", "Yes", "No");
-                    if (result)
-                    {
-                        Settings.UserId = string.Empty;
-                        Settings.UserPass = string.Empty;
-                        Xamarin.Forms.Application.Current.MainPage = new LoginPage();
-                    }
-                });
             }
             MasterPage.ListView.SelectedItem = null;
         }

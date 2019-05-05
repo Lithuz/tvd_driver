@@ -8,4 +8,8 @@ namespace tvd_driver.Services
     {
         void RegisterDevice();
     }
+    public interface IUnRegisterDevice
+    {
+        void UnregisterDevice();
+    }
 }

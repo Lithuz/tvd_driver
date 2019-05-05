@@ -18,5 +18,6 @@ namespace tvd_driver.Models
         public bool Asignado { get; set; }
         public int Enfermero { get; set; }
         public string Fecha { get; set; }
+        public string EstatusFinal { get; set; }
     }
 }

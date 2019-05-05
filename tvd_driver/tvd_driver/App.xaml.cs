@@ -12,6 +12,7 @@ namespace tvd_driver
     using tvd_driver.Models;
     using System.Threading.Tasks;
     using tvd_driver.ViewModels;
+    using Plugin.Connectivity;
 
     public partial class App : Application
     {
@@ -26,7 +27,11 @@ namespace tvd_driver
 
         public App()
         {
-            InitializeComponent();
+            InitializeComponent(); ;
+
+        }
+        protected override void OnStart()
+        {
             if (string.IsNullOrEmpty(Settings.UserId) || string.IsNullOrEmpty(Settings.UserPass))
             {
                 MainPage = new NavigationPage(new LoginPage());
@@ -38,9 +43,14 @@ namespace tvd_driver
                 {
                     var mainModel = MainViewModel.Getinstance();
                     var register = DependencyService.Get<IRegisterDevice>();
-                    register.RegisterDevice();
+                    //register.RegisterDevice();
                     mainModel.Usuario = (LoginModel)response;
-                    if(mainModel.Usuario.Estatus == 2)
+
+
+                    var responseTotales = apiServices.GetTotales4Loggeduser(mainModel.Usuario);
+                    mainModel.Usuario.ViajesTotales = responseTotales;
+
+                    if (mainModel.Usuario.Estatus == 2)
                     {
                         mainModel.Ventas = new VentasViewModel();
                         mainModel.Venta = apiServices.GetVentaNosync(mainModel.Usuario.idEnfermero);
@@ -54,16 +64,15 @@ namespace tvd_driver
                 }
                 else
                 {
-                    Application.Current.MainPage.DisplayAlert("Login Error", "Theres an error geting the requested user, please, login again.", "Dismiss");
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Login Error", "Theres an error geting the requested user, please, login again.", "Dismiss");
+                    });
                     Settings.UserId = string.Empty;
                     Settings.UserPass = string.Empty;
                     MainPage = new NavigationPage(new LoginPage());
-                    
                 }
             }
-        }
-        protected override void OnStart()
-        {
         }
 
         protected override void OnSleep()

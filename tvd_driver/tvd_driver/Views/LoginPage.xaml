@@ -39,10 +39,12 @@
                         VerticalOptions="EndAndExpand" 
                         Margin="40,0,40,0">
                         <Entry 
+                            x:Name="UserEntry"
                             Placeholder="User name" 
                             Keyboard="Email"
                             Text="{Binding Email, Mode=TwoWay}"/>
                         <Entry 
+                            x:Name="PasswordEntry"
                             Placeholder="Password" 
                             IsPassword="True"
                             Text="{Binding PassWord, Mode=TwoWay}"/>

@@ -20,19 +20,19 @@ using WindowsAzure.Messaging;
 [assembly: Dependency(typeof(tvd_driver.Droid.RegistrationDevice))]
 namespace tvd_driver.Droid
 {
-    public class RegistrationDevice : IRegisterDevice
+    public class RegistrationDevice : IRegisterDevice,IUnRegisterDevice
     {
+        const string TAG = "MyFirebaseIIDService";
         public void RegisterDevice()
         {
-            const string TAG = "MyFirebaseIIDService";
-            var mainActivity = MainActivity.Getinstance();
-            GcmClient.CheckDevice(mainActivity);
-            GcmClient.CheckManifest(mainActivity);
+            MyFirebaseIIDService ns = MyFirebaseIIDService.Getinstance();
+            ns.RegisterDevice(null);
+        }
 
-            Log.Info("MainActivity", "Registering...");
-            GcmClient.Register(mainActivity, Constants.SenderID);
-
-            Log.Debug(TAG, "FCM token: " + GcmClient.GetRegistrationId(mainActivity)); 
+        public  void UnregisterDevice()
+        {
+            MyFirebaseIIDService ns = MyFirebaseIIDService.Getinstance();
+            ns.UnregisterReceiverAsync();
         }
     }
 }

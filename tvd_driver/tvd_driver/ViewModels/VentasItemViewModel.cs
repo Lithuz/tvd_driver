@@ -38,9 +38,9 @@ namespace tvd_driver.ViewModels
                     var linkResponse = await apiServices.LinkVentaEnfermero(mainModel.Venta.idVenta, mainModel.Usuario.idEnfermero, true);
                     if (linkResponse)
                     {
-                        
-                        mainModel.relVentasPdcto = await apiServices.RelVentasProdcucto(mainModel.Venta.NumeroOrden);
 
+                        await apiServices.SendUpdateVentasAsync();
+                        mainModel.relVentasPdcto = await apiServices.RelVentasProdcucto(mainModel.Venta.NumeroOrden);                        
                         ProfileMainPage.Getinstance().Detail = new NavigationPage(new MainPage(mainModel.Venta));
                     }
                 }

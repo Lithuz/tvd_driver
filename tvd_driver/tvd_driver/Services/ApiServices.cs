@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Android.Util;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using tvd_driver.Models;
 using tvd_driver.ViewModels;
 
@@ -38,8 +40,7 @@ namespace tvd_driver.Services
             if (response.IsSuccessStatusCode)
             { 
                 var json = JsonConvert.DeserializeObject<List<VentasModel>>(result);
-                //var list = (List<VentasModel>)json;
-                return json;//json[0];
+                return json;
             }
             else
             {
@@ -55,8 +56,7 @@ namespace tvd_driver.Services
             if (response.Result.Length > 2)
             {
                 var json = JsonConvert.DeserializeObject<List<VentasItemViewModel>>(response.Result);
-                //var list = (List<VentasModel>)json;
-                return json[0];//json[0];
+                return json[0];
             }
             else
             {
@@ -72,12 +72,35 @@ namespace tvd_driver.Services
             if (response.Result.Length > 2)
             {
                 var json = JsonConvert.DeserializeObject<ObservableCollection<RelVentaPdctoModel>>(response.Result);
-                //var list = (List<VentasModel>)json;
-                return json;//json[0];
+                return json;
             }
             else
             {
                 return null;
+            }
+        }
+
+        internal int GetTotales4Loggeduser(LoginModel UserModel)
+        {
+            var idUsuario = UserModel.idEnfermero;
+            var result = 0;
+            var httpClient = new HttpClient();
+            var response = httpClient.GetStringAsync($"{mainApiUri}Ventas?idEnfermero={idUsuario}&EstatusFinal=Completado");
+
+            if (response.Result.Length > 2)
+            {
+                string resulResponse = response.Result;
+                JArray json = (JArray)JsonConvert.DeserializeObject(resulResponse);
+
+                if(json != null)
+                {
+                    result = json.Count;
+                }
+                return result;
+            }
+            else
+            {
+                return result;
             }
         }
 
@@ -112,11 +135,31 @@ namespace tvd_driver.Services
                 return false;
             }
         }
+        
 
         internal async Task<bool> SaveDisclaimer(int idVenta, string Disclaimer)
         {
             var httpClient = new HttpClient();
             var response = await httpClient.PutAsync(new Uri($"{mainApiUri}Ventas?idVentas={idVenta}&Disclaimer={Disclaimer}"), null);
+            var result = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        internal async Task<bool> ChangeSaleStatus(int idVenta, bool completed)
+        {
+            var fechaVenta = DateTime.Now.ToString();
+            var EstatusFinal = (completed) ? "Completado" : "Cancelado";
+
+            var httpClient = new HttpClient();
+            var response = await httpClient.PutAsync(new Uri($"{mainApiUri}Ventas?idVentas={idVenta}&fechaVenta={fechaVenta}&EstatusFinal={EstatusFinal}"), null);
             var result = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
@@ -155,12 +198,37 @@ namespace tvd_driver.Services
             if (response.IsSuccessStatusCode)
             {
                 var json = JsonConvert.DeserializeObject<ObservableCollection<RelVentaPdctoModel>>(result);
-                //var list = (List<VentasModel>)json;
-                return json;//json[0];
+                return json;
             }
             else
             {
                 return null;
+            }
+        }
+
+
+
+        internal async Task SendUpdateVentasAsync()
+        {
+            var httpClient = new HttpClient();
+            httpClient.BaseAddress = new Uri(mainApiUri.Replace("/api/",""));
+            httpClient.DefaultRequestHeaders
+                .Accept
+                .Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, mainApiUri.Replace("/api/", ""));
+            request.Content = new StringContent("\"UpdateVentas\"",Encoding.UTF8, "application/json");
+
+            
+            var result = await httpClient.SendAsync(request);
+
+            if (result.IsSuccessStatusCode)
+            {
+                Log.Debug("UPDATE VENTAS", "Succesfully updated ventas");
+            }
+            else
+            {
+                Log.Debug("UPDATE VENTAS", "Erro updateing ventas");
             }
         }
     }

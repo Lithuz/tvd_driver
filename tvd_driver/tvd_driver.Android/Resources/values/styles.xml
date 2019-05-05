@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
-
   <style name="MainTheme" parent="MainTheme.Base">
   </style>
   <!-- Base theme applied no matter what API -->
@@ -23,7 +22,6 @@
 
     <item name="android:datePickerDialogTheme">@style/AppCompatDialogStyle</item>;
   </style>
-
   <style name="AppCompatDialogStyle" parent="Theme.AppCompat.Light.Dialog">
     <item name="colorAccent">#5D2F99</item>
   </style>

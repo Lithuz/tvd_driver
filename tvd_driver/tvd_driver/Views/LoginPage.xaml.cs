@@ -9,6 +9,7 @@ using Xamarin.Forms.Xaml;
 using tvd_driver.Models;
 using tvd_driver.ViewModels;
 using tvd_driver.Helpers;
+using Plugin.Connectivity;
 
 namespace tvd_driver.Views
 {
@@ -18,6 +19,11 @@ namespace tvd_driver.Views
         public LoginPage()
         {
             InitializeComponent();
-        }
+            UserEntry.Completed += (object sender, EventArgs e) =>
+            {
+                PasswordEntry.Focus();
+            };
+        }       
     }
+
 }

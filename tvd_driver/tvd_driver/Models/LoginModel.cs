@@ -19,6 +19,10 @@ namespace tvd_driver.Models
         public bool Activo { get; set; }
         public int Estatus { get; set; }
 
+        //Extras cargados despues de Logearse
+        public float ViajesTotales { get; set; }
+        public float BonusTotal { get; set; }
+
         private static LoginModel instance;
 
         public static LoginModel GetInstance()

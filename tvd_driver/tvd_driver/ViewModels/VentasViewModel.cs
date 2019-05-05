@@ -43,7 +43,7 @@ namespace tvd_driver.ViewModels
         public string Filter
         {
             get { return this.filter; }
-            set { SetValue(ref this.filter, value);this.Search(); }
+            set { SetValue(ref this.filter, value); this.Search(); }
         }
 
         public VentasViewModel()
@@ -52,15 +52,17 @@ namespace tvd_driver.ViewModels
             this.LoadVentas();
         }
 
-        private async void LoadVentas()
+        public async void LoadVentas()
         {
+            var date = DateTime.Now.ToString("MM/dd/yyyy");
             IsRefreshing = true;
             this.ventasList = await apiServices.GetAviableVentas();
+            this.Ventas = new ObservableCollection<VentasItemViewModel>(this.ToVentasItemViewModel()
+                .Where(v => Convert.ToDateTime(v.Fecha).ToString("MM/dd/yyyy") == date));
             IsRefreshing = false;
-            this.Ventas = new ObservableCollection<VentasItemViewModel>(this.ToVentasItemViewModel());
         }
 
-        private  void Search()
+        private void Search()
         {
             if (string.IsNullOrEmpty(this.Filter))
             {
@@ -69,7 +71,7 @@ namespace tvd_driver.ViewModels
             else
             {
                 this.Ventas = new ObservableCollection<VentasItemViewModel>(
-                    this.ToVentasItemViewModel().Where(v => v.NombreCliente.ToLower().Contains(this.Filter.ToLower()) || 
+                    this.ToVentasItemViewModel().Where(v => v.NombreCliente.ToLower().Contains(this.Filter.ToLower()) ||
                                           v.NumeroOrden.ToString().Contains(this.Filter.ToLower())));
             }
         }
@@ -89,7 +91,8 @@ namespace tvd_driver.ViewModels
                 GeoAltitud = v.GeoAltitud,
                 Asignado = v.Asignado,
                 Enfermero = v.Enfermero,
-                Fecha = v.Fecha
+                Fecha = v.Fecha,
+                EstatusFinal = v.EstatusFinal
             });
             venta = response;
             return venta;

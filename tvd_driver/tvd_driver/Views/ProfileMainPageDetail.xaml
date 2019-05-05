@@ -4,16 +4,15 @@
              x:Class="tvd_driver.Views.ProfileMainPageDetail"
              BindingContext="{Binding Main,Source={StaticResource Locator}}"
              Title="Ventas">
-
-    <ContentPage.Content>
+    <ContentPage.Content>        
         <StackLayout
             BindingContext="{Binding Ventas}"
-            Padding="5">
+            Padding="5">            
             <SearchBar
                 Text="{Binding Filter,Mode=TwoWay}"
                 SearchCommand="{Binding SearchCommand}"
-                Placeholder="Seach...">                
-            </SearchBar>
+                Placeholder="Seach...">
+            </SearchBar>            
             <ListView
                 HasUnevenRows="True"
                 IsPullToRefreshEnabled="True"
@@ -22,7 +21,7 @@
                 ItemsSource="{Binding Ventas}"
                 SeparatorVisibility="None"
                 SelectionMode="Single">
-                <ListView.ItemTemplate>
+                <ListView.ItemTemplate>                        
                     <DataTemplate>
                         <ViewCell>
                             <Frame
@@ -60,6 +59,10 @@
                                         </Label>
                                         <Label
                                         Text="{Binding Direccion}"
+                                        TextColor="Black">
+                                        </Label>
+                                        <Label
+                                        Text="{Binding EstatusFinal}"
                                         TextColor="Black">
                                         </Label>
                                     </StackLayout>

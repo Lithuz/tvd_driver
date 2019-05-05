@@ -2,6 +2,7 @@
 using Plugin.Geolocator;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -77,7 +78,8 @@ namespace tvd_driver
                     if (statusResult)
                     {
                         var unlinkResult = await apiServices.LinkVentaEnfermero(mainViewModel.Venta.idVenta, 0, false);
-                        if (unlinkResult)
+                        var saleResult = await apiServices.ChangeSaleStatus(MainViewModel.Getinstance().Venta.idVenta, false);
+                        if (unlinkResult && saleResult)
                         {
                             mainViewModel.Venta = null;
                             mainViewModel.Ventas = new VentasViewModel();
@@ -96,11 +98,17 @@ namespace tvd_driver
                 if (result)
                 {
                     var statusResult = await apiServices.SetStatusAsync(MainViewModel.Getinstance().Usuario.idEnfermero, 1);
-                    if (statusResult)
+                    var saleResult = await apiServices.ChangeSaleStatus(MainViewModel.Getinstance().Venta.idVenta, true);
+                    if (statusResult && saleResult)
                     {
                         mainViewModel.Venta = null;
                         mainViewModel.Ventas = new VentasViewModel();
                         ProfileMainPage.Getinstance().Detail = new NavigationPage(new ProfileMainPageDetail());
+
+                        var tripsCount = apiServices.GetTotales4Loggeduser(MainViewModel.Getinstance().Usuario);
+                        var instance = ProfileMainPageMaster.GetInstance();
+                        ObservableCollection<ProfileMainPageMenuItem> ListElements = instance.ListView.ItemsSource as ObservableCollection<ProfileMainPageMenuItem>;
+                        ListElements[2].Title = $"Completed Services: {tripsCount}";
                     }
                 }
             });

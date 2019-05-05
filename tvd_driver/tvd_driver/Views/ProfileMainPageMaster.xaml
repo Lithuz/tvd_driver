@@ -25,7 +25,7 @@
                         Grid.ColumnSpan="4"
                         Grid.Row="1"
                             x:Name="LoginLogo" 
-                            Source="TheVitaminDoctors.png"
+                            Source="TheVitaminDoctorsLogoInApp.png"
                             Margin="10,0,10,5"
                         HorizontalOptions="CenterAndExpand"/>
                     <Label
@@ -51,16 +51,34 @@
                     <ViewCell>
                         <StackLayout Padding="15,10" HorizontalOptions="FillAndExpand">
                             <Label 
-                                VerticalOptions="EndAndExpand" 
                                 VerticalTextAlignment="Center" 
                                 Text="{Binding Title}" 
                                 TextColor="{Binding Color}"
+                                VerticalOptions="EndAndExpand"
+                                HorizontalTextAlignment="{Binding TextAlign}"
                                 FontSize="15"
-                                IsEnabled="False"/>                           
+                                IsEnabled="False"/>
                         </StackLayout>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <StackLayout Padding="15,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+            <Button 
+                BackgroundColor="Transparent"
+                BorderColor="Transparent"
+                VerticalOptions="End"
+                HorizontalOptions="EndAndExpand"
+                TextColor="DimGray"
+                Text="About"
+                Clicked="About_Clicked"/>
+            <Button 
+                BackgroundColor="Transparent"
+                BorderColor="Transparent"
+                VerticalOptions="End"
+                Text="LogOut"
+                TextColor="DimGray"
+                Clicked="LogOut_Clicked"/>
+        </StackLayout>
     </StackLayout>
 </ContentPage>

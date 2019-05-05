@@ -5,7 +5,6 @@ using System.Text;
 using System.Windows.Input;
 using tvd_driver.Services;
 using Xamarin.Forms;
-using Plugin.Settings;
 using tvd_driver.Helpers;
 
 namespace tvd_driver.ViewModels
@@ -19,7 +18,6 @@ namespace tvd_driver.ViewModels
         private bool isRefreshing;
         private bool isRemembered;
         public ICommand LoginCommand { get { return new RelayCommand(Login); } }
-
 
         public bool IsRefreshing
         {
@@ -76,16 +74,28 @@ namespace tvd_driver.ViewModels
                 }
                 else
                 {
-                    if (IsRemembered)
-                    {
-                        Settings.UserId = Email;
-                        Settings.UserPass = PassWord;
-                    }
+
+                    Settings.UserId = Email;
+                    Settings.UserPass = PassWord;
+
                     var mainModel = MainViewModel.Getinstance();
                     var register = DependencyService.Get<IRegisterDevice>();
-                    register.RegisterDevice();
                     mainModel.Usuario = response;
+
+                    var responseTotales = apiServices.GetTotales4Loggeduser(response);
+                    mainModel.Usuario.ViajesTotales = responseTotales;
+
                     mainModel.Ventas = new VentasViewModel();
+                    register.RegisterDevice();
+
+                    if (!IsRemembered)
+                    {
+                        Settings.UserId = string.Empty;
+                        Settings.UserPass = string.Empty;
+                    }
+                    Email = string.Empty;
+                    PassWord = string.Empty;
+
                     Application.Current.MainPage = new Views.ProfileMainPage();
                 }
             }
