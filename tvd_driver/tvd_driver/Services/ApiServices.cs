@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Android.Util;
+//using Android.Util;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using tvd_driver.Models;
@@ -224,11 +224,13 @@ namespace tvd_driver.Services
 
             if (result.IsSuccessStatusCode)
             {
-                Log.Debug("UPDATE VENTAS", "Succesfully updated ventas");
+                Console.WriteLine("VENTAS: Succesfully update");
+                //Log.Debug("UPDATE VENTAS", "Succesfully updated ventas");
             }
             else
             {
-                Log.Debug("UPDATE VENTAS", "Erro updateing ventas");
+                Console.WriteLine("VENTAS: Error on update");
+                //Log.Debug("UPDATE VENTAS", "Erro updateing ventas");
             }
         }
     }
